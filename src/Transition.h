@@ -17,6 +17,7 @@ public:
     bool match(string state, string tapeSymbols);
     string getNewSymbols();
     string getNewState();
+    string toString();
 };
 
 #endif

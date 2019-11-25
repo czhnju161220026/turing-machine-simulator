@@ -1,18 +1,21 @@
 #ifndef __TAPE_H__
 #define __TAPE_H__
-#include<vector>
+#include <vector>
+#include <string>
 using namespace std;
 
-class Tape {
+class Tape
+{
 private:
+    vector<char> contents;     //输入最左单元对应contents的index 0
+    vector<char> leftContent; //输入左侧的无限长空白纸带
     char blank;
-    vector<char> contents; //输入最左单元对应contents的index 0
-    vector<char> leftContents; //输入左侧的无限长空白纸带
-    
 public:
-    void get(int index);
-    void set(int index, char symbol); 
-    string toString(int head); //给定磁头位置，返回纸带的string表示
+    void init(string input);
+    char get(int index);
+    void set(int index, char symbol);
+    void setBlank(char ch);
+    string toString(int head, int index); //给定磁头位置，返回纸带的string表示
 };
 
 #endif

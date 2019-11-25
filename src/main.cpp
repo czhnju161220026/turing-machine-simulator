@@ -22,6 +22,6 @@ int main(int argc, char *argv[])
     cout << console << endl;
     
     TuringMachine tm(tmConfig);
-
+    cout << tm.toString() << endl;
     return 0;
 }
