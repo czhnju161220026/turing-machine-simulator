@@ -5,7 +5,7 @@
 #Q = {0,cp,cmp,mh,accept,accept2,accept3,accept4,halt_accept,reject,reject2,reject3,reject4,reject5,halt_reject}
 
 ; the finite set of input symbols
-#S = {0,1}
+#S = {0,1} ;test
 
 ; the complete set of tape symbols
 #G = {0,1,_,T,r,u,e,F,a,l,s}
@@ -23,9 +23,9 @@
 #N = 2 
 
 ; the transition functions
-
+  ;test
 ; State 0: begin
-0 ** ** ** cp
+0 ** ** ** cp ;test
 0 __ __ ** accept     ; Empty input
 
 ; State cp: copy the string to the 2nd tape 
