@@ -1,11 +1,11 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
+#include "TuringMachine.h"
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    cout << "Hello world" << endl;
     if (argc < 2)
     {
         cout << "You need to pass the test directory through arguments." << endl;
@@ -21,5 +21,7 @@ int main(int argc, char *argv[])
     cout << result << endl;
     cout << console << endl;
     
+    TuringMachine tm(tmConfig);
+
     return 0;
 }
