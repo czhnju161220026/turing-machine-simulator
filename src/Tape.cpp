@@ -6,11 +6,11 @@ char Tape::get(int index)
 {
     if (index >= 0)
     {
-        if (index >= this->contents.size())
+        if (index >= this->content.size())
         {
             return this->blank;
         }
-        return this->contents[index];
+        return this->content[index];
     }
     else
     {
@@ -27,19 +27,20 @@ void Tape::set(int index, char symbol)
 {
     if (index >= 0)
     {
-        if (index < this->contents.size())
+        if (index < this->content.size())
         {
-            this->contents[index] = symbol;
+            this->content[index] = symbol;
             return;
         }
-        else if (index == this->contents.size())
+        else if (index == this->content.size())
         {
-            this->contents.push_back(symbol);
+            this->content.push_back(symbol);
             return;
         }
         assert(0);
     }
-    else {
+    else
+    {
         index = -index - 1;
         if (index < this->leftContent.size())
         {
@@ -55,20 +56,123 @@ void Tape::set(int index, char symbol)
     }
 }
 
-string Tape::toString(int head, int index)
+string Tape::toString(int head)
 {
     string res = "";
-    res = res + "Index" + to_string(index) + "\t:";
-    
-    return "";
+    res = res + "Index" + to_string(this->index) + "\t:\t";
+    int first = 0, last = 0;
+
+    for (int i = this->leftContent.size() - 1; i >= 0; i--)
+    {
+        if (this->leftContent[i] != this->blank)
+        {
+            first = -(i + 1);
+            break;
+        }
+    }
+    if (first == 0)
+    {
+        for (int i = 0; i < this->content.size(); i++)
+        {
+            if (this->content[i] != this->blank)
+            {
+                first = i;
+                break;
+            }
+            if (i == head)
+            {
+                first = head;
+                break;
+            }
+        }
+    }
+
+    for (int i = this->content.size() - 1; i >= 0; i--)
+    {
+        if (this->content[i] != this->blank)
+        {
+            last = i;
+            break;
+        }
+    }
+    if (last == 0)
+    {
+        for (int i = 0; i < this->leftContent.size(); i++)
+        {
+            if (this->leftContent[i] != this->blank)
+            {
+                last = -(i + 1);
+                break;
+            }
+            if (i == head)
+            {
+                last = head;
+                break;
+            }
+        }
+    }
+
+    if (head < first)
+    {
+        first = head;
+    }
+    else if (head > last)
+    {
+        last = head;
+    }
+    for (int i = first; i <= last; i++)
+    {
+        res = res + to_string(i) + "\t";
+    }
+    res = res + "\n";
+    res = res + "Tape" + to_string(this->index) + "\t:\t";
+    for (int i = first; i <= last; i++)
+    {
+        res = res + this->get(i) + "\t";
+    }
+    res = res + "\n";
+
+    res = res + "Head" + to_string(this->index) + "\t:\t";
+    int offset = head - first;
+    for (int i = 0; i < offset; i++)
+    {
+        res = res + " " + "\t";
+    }
+    res = res + "^\n";
+
+    return res;
 }
 
-void Tape::setBlank(char ch) {this->blank = ch;}
+void Tape::setBlank(char ch) { this->blank = ch; }
+
+void Tape::setIndex(int index) { this->index = index; }
 
 void Tape::init(string input)
 {
-    for(int i = 0; i < input.length(); i++)
+    for (int i = 0; i < input.length(); i++)
     {
-        this->contents.push_back(input[i]);
+        this->content.push_back(input[i]);
     }
+}
+
+string Tape::result()
+{
+    string result = "";
+    bool append = false;
+    int first = -(this->leftContent.size() + 1);
+    int last = this->content.size() - 1;
+    for (int i = first; i <= last; i++)
+    {
+        char ch = this->get(i);
+        if (ch != this->blank)
+        {
+            append = true;
+        }
+        if (append)
+        {
+            result += ch;
+        }
+    }
+
+    return result;
 }

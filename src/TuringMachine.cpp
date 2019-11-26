@@ -4,6 +4,8 @@
 #include <sstream>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
+#include <assert.h>
 using namespace std;
 
 string removeSpaces(string line)
@@ -77,6 +79,7 @@ TuringMachine::TuringMachine(string tmConfig)
             buffer.push_back(line);
         }
     }
+    fin.close();
     for (int i = 0; i < buffer.size(); i++)
     {
         string line = buffer[i];
@@ -188,19 +191,23 @@ void TuringMachine::setAttr(string attr, string value)
             this->heads.push_back(0);
             Tape tape;
             tape.setBlank(this->blank);
+            tape.setIndex(i);
             this->tapes.push_back(tape);
         }
     }
 }
 
-void TuringMachine::step()
-{
-}
-
 string TuringMachine::getID()
 {
-
-    return "";
+    string res = "";
+    res = res + "Step\t:\t" + to_string(this->stepCount) + "\n";
+    for (int i = 0; i < this->tapes.size(); i++)
+    {
+        res = res + this->tapes[i].toString(this->heads[i]);
+    }
+    res = res + "State\t:\t" + this->currentState + "\n";
+    res = res + "-----------------------------------------------------------------\n";
+    return res;
 }
 
 string TuringMachine::toString()
@@ -247,21 +254,140 @@ string TuringMachine::toString()
     res = res + "Tapes: \n";
     for (int i = 0; i < this->tapes.size(); i++)
     {
-        res = res + this->tapes[i].toString(heads[i], i) + "\n";
+        res = res + this->tapes[i].toString(heads[i]) + "\n";
     }
     return res;
 }
 
 void TuringMachine::refresh()
 {
+    this->currentState = this->startState;
+    this->tapes = vector<Tape>();
+    for(int i = 0; i < this->numOfTapes; i++) {
+        this->heads[i] = 0;
+        Tape tape;
+        tape.setBlank(this->blank);
+        tape.setIndex(i);
+        this->tapes.push_back(tape);
+    }
 }
 
-void TuringMachine::input(string str)
+bool TuringMachine::input(string str)
 {
-    if(this->tapes.size() < 1)
+    if (this->tapes.size() < 1)
     {
         cout << "No tapes" << endl;
-        return ;
+        return false;
+    }
+    for (int i = 0; i < str.length(); i++)
+    {
+        bool legal = false;
+        char ch = str[i];
+        for(int j = 0; j < this->inputSymbols.size(); j++)
+        {
+            if(ch == this->inputSymbols[j])
+            {
+                legal = true;
+                break;
+            }
+        }
+        if(!legal) {
+            return false;
+        }
     }
     this->tapes[0].init(str);
+    return true;
+}
+
+//图灵机的一步转移
+//返回true，表示尚未结束，返回false，表示到达了终止状态
+bool TuringMachine::step()
+{
+    if(this->accept()) {
+        return false;
+    }
+    this->stepCount++;
+    string tapeSymbols = "";
+    for (int i = 0; i < this->numOfTapes; i++)
+    {
+        tapeSymbols = tapeSymbols + this->tapes[i].get(this->heads[i]);
+    }
+    vector<Transition> matchedTransitions;
+    for (int i = 0; i < this->transitions.size(); i++)
+    {
+        if (this->transitions[i].match(this->currentState, tapeSymbols))
+        {
+            matchedTransitions.push_back(this->transitions[i]);
+        }
+    }
+    //如果没有匹配的transition
+    if(matchedTransitions.size() == 0)
+    {
+        return false;
+    }
+    //选择通配符少的匹配的transition规则
+    sort(matchedTransitions.begin(), matchedTransitions.end());
+
+    /*for(int i = 0; i < matchedTransitions.size(); i++)
+    {
+        cout << "Match: " << matchedTransitions[i].toString();
+    }*/
+
+    Transition t = matchedTransitions[0];
+    string newTapeSymbols = t.getNewSymbols();
+    string newState = t.getNewState();
+    string directions = t.getDirections();
+
+    assert(this->numOfTapes == newTapeSymbols.length());
+    assert(this->numOfTapes == directions.length());
+
+    //改写纸带
+    for(int i = 0; i < this->numOfTapes; i++)
+    {
+        int head = this->heads[i];
+        char oldSymbol = this->tapes[i].get(head);
+        char newSymbol = newTapeSymbols[i];
+        if(newSymbol == '*')
+        {
+            this->tapes[i].set(head, oldSymbol);
+        }
+        else {
+            this->tapes[i].set(head, newSymbol);
+        }
+
+    }
+
+    //移动磁头
+    for(int i = 0; i < this->numOfTapes; i++)
+    {
+        char direction = directions[i];
+        if(direction == 'l') {
+            this->heads[i] --;
+        }
+        else if(direction == 'r')
+        {
+            this->heads[i] ++;
+        }
+    }
+
+    //设置新状态
+    this->currentState = newState;
+    return true;
+}
+
+bool TuringMachine::accept()
+{
+    for(int i = 0; i < this->finalStates.size(); i++)
+    {
+        if(this->currentState == this->finalStates[i])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+string TuringMachine::result()
+{
+    return this->tapes[0].result();
 }

@@ -13,9 +13,33 @@ string Transition::toString()
 
 }
 
+bool symbolsMatch(string str1, string str2)
+{
+    if(str1.length() != str2.length())
+    {
+        return false;
+    }
+
+    for(int i = 0; i < str1.length(); i++)
+    {
+        if(str1[i] == '*' || str2[i] == '*' || str1[i] == str2[i]) {
+            continue;
+        }
+        else {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool Transition::match(string state, string tapeSymbols)
 {
-    return false;
+    if(state != this->state)
+    {
+        return false;
+    }
+    return symbolsMatch(this->tapeSymbols, tapeSymbols);
 }
 
 string Transition::getNewSymbols()
@@ -26,4 +50,9 @@ string Transition::getNewSymbols()
 string Transition::getNewState()
 {
     return this->newState;
+}
+
+string Transition::getDirections()
+{
+    return this->directions;
 }

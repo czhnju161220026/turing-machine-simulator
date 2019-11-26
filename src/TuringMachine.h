@@ -29,11 +29,13 @@ private:
     void addTransition(string line);
 public:
     TuringMachine(string tmConfig);
-    void step();
+    bool step();
     string getID();
     string toString();
     void refresh();
-    void input(string str);
+    bool input(string str);
+    bool accept();
+    string result();
 };
 
 #endif
