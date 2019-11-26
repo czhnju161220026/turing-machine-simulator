@@ -16,5 +16,5 @@ clean:
 	rm -f turing
 	rm -f *.o
 
-test: clean turing
-	./turing ../test
+test1: clean turing
+	./turing ../test1
