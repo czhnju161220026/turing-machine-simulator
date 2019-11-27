@@ -27,17 +27,45 @@
     <td>编译器</td>
     <td>g++ (Ubuntu 5.5.0-12ubuntu1) 5.5.0 20171010</td>
   </tr>
-</table>
-
-
-
-
+  <tr>
+    <td>提交说明</td>
+    <td>按照实验说明给定的方式设定提交文件的结构，my-project文件夹下是完整的代码。
+    </td>
+  </tr></table>
 
 ## 编译运行说明
 
-## 模块设计
+### 编译运行
 
-## 算法设计
+项目使用**Makefile**进行构建。编译过程比较简单。执行<code>make</code>后，会生成可执行文件<code>turing</code>,通过运行<code>./turing path/to/case</code>进行测试。程序将读入**case**目录下的**test.tm**和**input.txt**，并在同一目录下生成**console.txt**和**result.txt**。
+
+例子:
+
+``` shell
+user: ~/my-project/$ make
+g++ -c ./main.cpp ./Tape.cpp ./utils.cpp ./Transition.cpp ./TuringMachine.cpp 
+g++ -std=c++11 ./main.o ./Tape.o ./utils.o ./Transition.o ./TuringMachine.o -o turing
+user: ~/my-project/$ ./turing ../case1
+
+```
+
+### Make选项
+
+Makefile也提供了其他的Makefile目标，可以通过执行<code>make case1</code>或<code>make case2</code>自动编译生成可执行文件，并进行测试。（要求：case1和case2应该位于Makefile的上一层目录）
+
+##设计思路
+
+### 模块设计
+
+
+
+### 算法设计
+
+#### 判定语言{0^k | k是一个斐波那契数}
+
+#### {ww | w in {0,1}*}
+
+
 
 ## 运行展示
 
