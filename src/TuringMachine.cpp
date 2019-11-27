@@ -1,4 +1,5 @@
 #include "TuringMachine.h"
+#include "utils.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -66,7 +67,7 @@ vector<string> splitByComma(string str)
 TuringMachine::TuringMachine(string tmConfig)
 {
     this->stepCount = 0;
-    ifstream fin = ifstream(tmConfig.c_str());
+    ifstream fin(tmConfig.c_str());
     string line;
     vector<string> buffer;
     while (getline(fin, line))
@@ -200,7 +201,7 @@ void TuringMachine::setAttr(string attr, string value)
 string TuringMachine::getID()
 {
     string res = "";
-    res = res + "Step\t:\t" + to_string(this->stepCount) + "\n";
+    res = res + "Step\t:\t" + int_to_string(this->stepCount) + "\n";
     for (int i = 0; i < this->tapes.size(); i++)
     {
         res = res + this->tapes[i].toString(this->heads[i]);
@@ -213,7 +214,7 @@ string TuringMachine::getID()
 string TuringMachine::toString()
 {
     string res = "";
-    res = res + "Num of tapes: " + to_string(this->numOfTapes) + "\n";
+    res = res + "Num of tapes: " + int_to_string(this->numOfTapes) + "\n";
     res = res + "Blank symbol: " + this->blank + "\n";
     res = res + "States: ";
     for (int i = 0; i < this->states.size(); i++)
@@ -243,7 +244,7 @@ string TuringMachine::toString()
     res = res + "Heads: ";
     for (int i = 0; i < this->heads.size(); i++)
     {
-        res = res + to_string(this->heads[i]) + ',';
+        res = res + int_to_string(this->heads[i]) + ',';
     }
     res = res + "\n";
     res = res + "Transitions: \n";

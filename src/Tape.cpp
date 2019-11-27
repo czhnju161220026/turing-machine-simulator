@@ -1,4 +1,5 @@
 #include "Tape.h"
+#include "utils.h"
 #include <assert.h>
 #include <iostream>
 using namespace std;
@@ -60,7 +61,7 @@ void Tape::set(int index, char symbol)
 string Tape::toString(int head)
 {
     string res = "";
-    res = res + "Index" + to_string(this->index) + "\t:\t";
+    res = res + "Index" + int_to_string(this->index) + "\t:\t";
     int first = 0, last = 0;
 
     for (int i = this->leftContent.size() - 1; i >= 0; i--)
@@ -123,17 +124,17 @@ string Tape::toString(int head)
     }
     for (int i = first; i <= last; i++)
     {
-        res = res + to_string(i) + "\t";
+        res = res + int_to_string(i) + "\t";
     }
     res = res + "\n";
-    res = res + "Tape" + to_string(this->index) + "\t:\t";
+    res = res + "Tape" + int_to_string(this->index) + "\t:\t";
     for (int i = first; i <= last; i++)
     {
         res = res + this->get(i) + "\t";
     }
     res = res + "\n";
 
-    res = res + "Head" + to_string(this->index) + "\t:\t";
+    res = res + "Head" + int_to_string(this->index) + "\t:\t";
     int offset = head - first;
     for (int i = 0; i < offset; i++)
     {
