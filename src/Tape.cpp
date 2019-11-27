@@ -1,5 +1,6 @@
 #include "Tape.h"
 #include <assert.h>
+#include <iostream>
 using namespace std;
 
 char Tape::get(int index)
@@ -173,6 +174,10 @@ string Tape::result()
             result += ch;
         }
     }
-
+    string temp = "";
+    int begin = result.find_first_not_of(this->blank);
+    int end = result.find_last_not_of(this->blank);
+    //cout << result <<" "<<begin << " "<<end <<endl;
+    result = result.substr(begin, end - begin + 1);
     return result;
 }

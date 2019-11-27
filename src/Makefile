@@ -10,18 +10,18 @@ turing:
 	$(CC) $(CPPFLAGS) $(OBJS) -o turing
 
 
-.PHONY: clean test1 test2 test3
+.PHONY: clean test case1 case2
 
 clean: 
 	rm -f turing
 	rm -f *.o
 
-test1: clean turing
-	./turing ../test1
+test: clean turing
+	./turing ../test
 
-test2: clean turing
-	./turing ../test2
+case1: clean turing
+	./turing ../case1
 
-test3: clean turing
-	./turing ../test3
+case2: clean turing
+	./turing ../case2
 
