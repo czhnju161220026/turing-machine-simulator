@@ -1,3 +1,7 @@
 *.o
 turing
 .vscode
+test
+case1
+case2
+
