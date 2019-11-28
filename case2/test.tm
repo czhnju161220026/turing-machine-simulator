@@ -1,4 +1,4 @@
-#Q = {start,cp,reset_all,reset_first,search1,search2,cmp,accept,accept2,accept3,accept4,halt_accept,reject,reject2,reject3,reject4,reject5,halt_reject}
+#Q = {start,cp,reset_all,reset_first,search1,search2,cmp,clean,accept,accept2,accept3,accept4,halt_accept,reject,reject2,reject3,reject4,reject5,halt_reject}
 #S = {0,1}
 #G = {0,1,_,T,r,u,e,F,a,l,s}
 #q0 = start
@@ -25,7 +25,11 @@ reset_all __ __ rr search1
 search1 ** ** r* search2
 search2 ** ** rr search1
 search1 _* _* l* reset_first
-search2 _* _* l* reject     ; length is odd
+search2 _* _* l* clean     ; length is odd
+
+;clean: clean the tape
+clean ** _* l* clean
+clean _* _* ** reject
 
 ; reset_first
 reset_first ** ** l* reset_first
