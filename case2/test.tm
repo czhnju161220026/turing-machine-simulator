@@ -1,69 +1,57 @@
-#Q = {0,init1,init2,init3,init4,test,cmp,grow,forward,reset1,reset2,accept,accept2,accept3,accept4,halt_accept,reject,reject2,reject3,reject4,reject5,halt_reject}
-#S = {0}
-#G = {0,X,Y,Z,_,T,r,u,e,F,a,l,s}
-#q0 = 0
+#Q = {start,cp,reset_all,reset_first,search1,search2,cmp,accept,accept2,accept3,accept4,halt_accept,reject,reject2,reject3,reject4,reject5,halt_reject}
+#S = {0,1}
+#G = {0,1,_,T,r,u,e,F,a,l,s}
+#q0 = start
 #B = _
 #F = {halt_accept}
-#N = 3
+#N = 2
 
 ; transition functions
-; state 0
-0 ___ ___ *** reject  ;empty string
-0 0__ *__ r** test
-test ___ ___ l** accept   ;length=1
-test 0__ 0__ l** init1     ;length>1,we start 
+; start
+start __ __ ** accept
+start ** ** ** cp
 
-;init: write 00 to tape1, mark the begin in tape2
-init1 0__ 00_ *rr init2
-init2 0__ 00Y *ll init3
-init3 00_ *** **l init4
-init4 **_ **X **r cmp
+; cp string to the 2nd tape
+cp 0_ 00 rr cp
+cp 1_ 11 rr cp
+cp __ __ ll reset_all
 
-; cmp
-cmp 00* *** rrr cmp
-cmp __* *** l** accept
-cmp _0* *** l** reject
-cmp 0_* 0ZY **l reset2
+; reset_all: move head0 and head1 to the left
+reset_all ** ** ll reset_all
+reset_all __ __ rr search1
 
-;reset2 
-reset2 *** *** **l reset2
-reset2 **X **X **r grow
+; search: search the mid
+; head0 move twice while head1 move once.
+search1 ** ** r* search2
+search2 ** ** rr search1
+search1 _* _* l* reset_first
+search2 _* _* l* reject     ; length is odd
 
+; reset_first
+reset_first ** ** l* reset_first
+reset_first _* _* r* cmp
 
-;grow
-grow 0Z_ 0Z_ *rr grow
-grow 0__ 00_ *rr grow
-grow 0_Y 0__ *l* reset1
+; compare until head1 hit blank
+cmp 00 __ rr cmp
+cmp 01 __ ** reject
+cmp 10 __ ** reject
+cmp 11 __ rr cmp
+cmp *_ *_ ** accept
 
-;reset1
-reset1 *0* *0* *l* reset1
-reset1 *Z* *0* *** forward
+; accept: first, clean the tape then write True
+accept ** _* r* accept
+accept _* T* r* accept2
+accept2 _* r* r* accept3
+accept3 _* u* r* accept4
+accept4 _* e* ** halt_accept
 
-;forward
-forward 00_ 00_ **r forward
-forward 00Y 00Y *** cmp
-
-;accept
-accept 0** _** l** accept
-accept _** T** r** accept2
-accept2 _** r** r** accept3
-accept3 _** u** r** accept4
-accept4 _** e** *** halt_accept
-
-;reject
-reject 0** _** l** reject
-reject _** F** r** reject2
-reject2 _** a** r** reject3
-reject3 _** l** r** reject4
-reject4 _** s** r** reject5
-reject5 _** e** *** halt_reject
-
-
-
-
-
-
-
+; reject: first, clean the tape then write False
+reject ** _* r* reject
+reject _* F* r* reject2
+reject2 _* a* r* reject3
+reject3 _* l* r* reject4
+reject4 _* s* r* reject5
+reject5 _* e* ** halt_reject
 
 
 
