@@ -34,6 +34,8 @@ reset12 **_ **_ ll* reset12
 ;find2
 find2 *1_ *1_ *r* find2
 find2 *2_ *2_ *** mv2
+find2 *0_ *0_ *** reject
+find2 *__ *__ *** reject
 
 
 ;mv2
